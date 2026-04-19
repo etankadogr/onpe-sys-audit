@@ -736,25 +736,68 @@ Entorno dev: <span class="url">https://resultadoelectoraldesarrollo.dev.onpe.gob
 
   <!-- SECTION 5 -->
   <div class="section">
-    <h2>Por qué no auditamos antes — y por qué eso nos hace cómplices</h2>
+    <h2>La responsabilidad es de la ONPE — no de los ciudadanos</h2>
     <p>
-      Los peruanos confiamos en la ONPE. Y esa confianza, ejercida sin verificación, es exactamente
-      lo que permite que sistemas como este lleguen a producción sin escrutinio. La confianza ciega
-      en instituciones públicas no es virtud cívica — es abdicación de responsabilidad colectiva.
+      La ONPE tiene presupuesto institucional, equipo técnico propio y la obligación legal de
+      garantizar la seguridad de los sistemas que administra. Auditar la infraestructura electoral
+      antes de un despliegue en producción no es una tarea ciudadana voluntaria — es una
+      responsabilidad del Estado, financiada con recursos públicos y exigible por ley.
     </p>
     <p>
-      La comunidad técnica peruana — desarrolladores, ingenieros de software, especialistas en
-      seguridad — tiene herramientas, conocimiento y acceso para hacer exactamente lo que documenta
-      este informe. No requiere vulnerar ningún sistema. No requiere violar ninguna ley. Requiere
-      tiempo, criterio técnico, y la voluntad de hacer el trabajo.
+      Los peruanos no teníamos que descubrir estas vulnerabilidades. La ONPE debió haberlas
+      encontrado — y corregido — antes del 14 de abril. Un pentest básico, una revisión de
+      configuración, una auditoría de acceso: ninguna de esas medidas requería conocimiento
+      extraordinario. Requería hacer el trabajo que la institución tiene el deber de hacer.
     </p>
     <p>
-      Esa auditoría debió ocurrir antes del 10 de abril. Debió ocurrir antes del despliegue del
-      14 de abril. Debió ser parte del proceso institucional de verificación del sistema electoral.
-      No lo fue. Y ahora, con más de 5,000 actas enviadas al JEE, con actas físicas encontradas
-      en la calle, con pedidos de anulación en curso, estamos preguntándonos si el proceso fue
-      limpio — sin poder responder con certeza técnica, porque nadie hizo la tarea a tiempo.
+      Que estas fallas hayan llegado a producción dos días antes de las elecciones no es un
+      descuido menor. Es una falla de gobernanza institucional. La pregunta no es por qué los
+      ciudadanos no auditaron antes — es por qué la ONPE no lo hizo, y si alguien firmó
+      un informe diciendo que el sistema era seguro.
     </p>
+  </div>
+
+  <!-- SECTION 5b -->
+  <div class="section">
+    <h2>Las preguntas que la ONPE no puede esquivar</h2>
+    <p>
+      Estas preguntas son binarias. No admiten respuesta intermedia. O la ONPE las responde
+      con documentación, o la negligencia queda establecida por omisión:
+    </p>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-text">
+          <strong>¿Existe un informe de auditoría de seguridad del sistema, firmado por una empresa
+          independiente, con fecha anterior al 14 de abril de 2026?</strong> Si existe, publíquenlo.
+          Si no existe, la ONPE desplegó un sistema electoral sin auditoría técnica.
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-text">
+          <strong>¿Hay registros de acceso al endpoint de padrón entre el 10 y el 19 de abril?</strong>
+          Sin rate limiting, no hay logs de anomalía. La ONPE no puede afirmar que nadie descargó
+          los datos de 27 millones de ciudadanos. Esa incertidumbre es irreversible.
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-text">
+          <strong>¿Bajo qué normativa se diseñó el endpoint de padrón como público y sin autenticación?</strong>
+          El RENIEC administra los mismos datos y exige autenticación, convenio y registro de uso.
+          Dos instituciones del mismo Estado, con los mismos datos, con criterios opuestos.
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-text">
+          <strong>¿El sistema será auditado y corregido antes de la segunda vuelta?</strong>
+          Estas vulnerabilidades siguen activas hoy. Si la ONPE usa el mismo sistema sin
+          correcciones habiendo sido notificada públicamente, la responsabilidad es indiscutible.
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- SECTION 6 -->
@@ -786,14 +829,19 @@ Entorno dev: <span class="url">https://resultadoelectoraldesarrollo.dev.onpe.gob
   <div class="verdict">
     <div class="verdict-label">Veredicto técnico</div>
     <p>
-      Un sistema electoral con dos vulnerabilidades de severidad alta verificadas, desplegado sin
+      Un sistema electoral con vulnerabilidades de severidad alta verificadas, desplegado sin
       rate limiting, sin autenticación en el endpoint del padrón, con la documentación técnica
-      completa accesible públicamente, dos días antes de las elecciones generales de un país en
-      crisis institucional, <strong>no debió salir a producción</strong>. No como consecuencia de
-      malicia — posiblemente. Sí como consecuencia de un proceso de desarrollo, verificación y
-      despliegue que no tenía la seguridad como criterio de aprobación. Eso no se llama falla.
-      Se llama insuficiencia de proceso. Y la insuficiencia de proceso, en sistemas críticos
-      de democracia, tiene consecuencias que van más allá del código.
+      interna accesible públicamente, dos días antes de las elecciones generales de un país en
+      crisis institucional, <strong>no debió salir a producción</strong>. Y si la ONPE no puede
+      presentar un informe de auditoría independiente previo al despliegue, <strong>no debe
+      usarse para la segunda vuelta</strong>.
+    </p>
+    <p style="margin-top:1rem;">
+      Esto no es una acusación de fraude. Es algo más grave: es la constatación de que el sistema
+      que administró la democracia peruana el 10 de abril de 2026 <strong>nunca fue verificado
+      como seguro por nadie con autoridad para hacerlo</strong>. La confianza en una institución
+      electoral no se declara — se demuestra. La ONPE no puede demostrarla porque nunca construyó
+      los mecanismos para hacerlo. Eso no se llama falla. Se llama negligencia institucional.
     </p>
   </div>
 

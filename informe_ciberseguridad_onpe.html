@@ -1323,6 +1323,81 @@ Date:          Sun, 19 Apr 2026 16:04:14 GMT</pre>
     </div>
   </div>
 
+  <!-- ══ S10: EXIGENCIAS Y CONTRAARGUMENTOS ══ -->
+  <div class="seccion" id="s10">
+    <div class="seccion-header">
+      <div class="seccion-num">10</div>
+      <h2>Por qué este sistema no puede usarse en la segunda vuelta sin auditoría</h2>
+    </div>
+    <div class="seccion-body">
+
+      <div class="nota nota-crit" style="margin-bottom:20px;">
+        <strong>Posición técnica:</strong> Las vulnerabilidades documentadas en este informe siguen activas
+        al 19 de abril de 2026. El mismo sistema, sin correcciones, no cumple el estándar mínimo
+        exigible a infraestructura electoral crítica.
+      </div>
+
+      <h4 style="margin-bottom:12px; color:#1c2833;">Contraargumento ONPE: "ver el padrón es transparencia, no le afecta a nadie"</h4>
+      <p style="margin-bottom:10px;"><strong>Respuesta técnica:</strong></p>
+      <ul style="margin-left:20px; margin-bottom:16px; line-height:2;">
+        <li><strong>Transparencia electoral significa publicar agregados — no exponer individuos.</strong>
+        El endpoint permite consultar la mesa de votación de cualquier ciudadano específico por DNI.
+        El RENIEC administra los mismos datos y exige autenticación, convenio institucional y
+        registro de uso. Dos instituciones del mismo Estado, con los mismos datos, con criterios opuestos.</li>
+        <li><strong>"No le afecta a nadie" es indemostrable.</strong> Sin rate limiting no hay logs de
+        anomalía. La ONPE no puede saber quién consultó qué, cuándo, ni cuántos registros extrajo
+        entre el 10 y el 19 de abril. La ausencia de evidencia de daño no es evidencia de ausencia de daño.</li>
+        <li><strong>La Ley N° 29733</strong> establece que el titular de una base de datos con datos
+        personales debe implementar medidas de seguridad técnicas. La correlación DNI → mesa es
+        dato personal bajo esa ley. No implementar controles de acceso es infracción sancionable por la ANPD.</li>
+      </ul>
+
+      <h4 style="margin-bottom:12px; color:#1c2833;">Contraargumento ONPE: "los resultados están protegidos, el sistema es de solo lectura"</h4>
+      <p style="margin-bottom:10px;"><strong>Respuesta técnica:</strong></p>
+      <ul style="margin-left:20px; margin-bottom:16px; line-height:2;">
+        <li>El conteo de votos puede ser correcto y aun así el sistema ser inaceptable: la exposición
+        del padrón individual, la arquitectura interna y la ausencia de logs generan una <strong>asimetría
+        informacional</strong> entre actores con recursos técnicos y el ciudadano común.</li>
+        <li>El Swagger expuesto documentaba endpoints administrativos internos. No podemos confirmar
+        que todos los endpoints de escritura estén correctamente autenticados — porque nadie hizo la auditoría.</li>
+        <li>La ausencia de auditoría independiente hace que la afirmación "los resultados están protegidos"
+        sea una declaración de parte, no un hecho verificado.</li>
+      </ul>
+
+      <h4 style="margin-bottom:12px; color:#1c2833;">Las preguntas binarias — sin respuesta intermedia posible</h4>
+      <table>
+        <thead><tr><th>Pregunta</th><th>Si la respuesta es SÍ</th><th>Si la respuesta es NO</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>¿Existe informe de auditoría de seguridad firmado por empresa independiente, previo al 14 de abril?</td>
+            <td>Publíquelo. La ciudadanía tiene derecho a verificarlo.</td>
+            <td>La ONPE desplegó un sistema electoral sin auditoría técnica independiente.</td>
+          </tr>
+          <tr>
+            <td>¿Hay registros de acceso al endpoint de padrón entre el 10 y el 19 de abril?</td>
+            <td>Publique el resumen de accesos. ¿Cuántas consultas? ¿Desde dónde?</td>
+            <td>Es imposible saber si el padrón fue descargado masivamente. Esa incertidumbre es irreversible.</td>
+          </tr>
+          <tr>
+            <td>¿El sistema será corregido y auditado antes de la segunda vuelta?</td>
+            <td>Informe la fecha, el responsable y la empresa auditora.</td>
+            <td>La ONPE usará un sistema con vulnerabilidades conocidas habiendo sido notificada públicamente.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="nota nota-crit" style="margin-top:20px;">
+        <strong>Estándar internacional incumplido:</strong> NIST SP 800-53 exige controles de acceso
+        sobre datos de identificación de votantes. Las directrices NDI de Integridad Electoral requieren
+        auditoría técnica independiente antes del despliegue en producción. ISO 27001 exige clasificación
+        y control de acceso sobre activos de información. La ONPE no certifica ninguno de estos estándares
+        — lo cual no es obligatorio legalmente, pero es el referente técnico internacional para sistemas
+        electorales críticos.
+      </div>
+
+    </div>
+  </div>
+
 </div><!-- /contenido -->
 
 <footer>
