@@ -5,20 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Auditoría de Seguridad — Sistema ONPE 2026</title>
   <style>
-    body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 700px; margin: 60px auto; padding: 0 20px; background: #f5f5f5; }
-    h1 { color: #c0392b; border-bottom: 3px solid #c0392b; padding-bottom: 10px; }
-    h2 { color: #1c2833; font-size: 15px; margin-top: 30px; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 740px; margin: 60px auto; padding: 0 20px; background: #f5f5f5; color: #1a1a1a; }
+    h1 { color: #c0392b; border-bottom: 3px solid #c0392b; padding-bottom: 10px; font-size: 22px; line-height: 1.3; }
+    h2 { color: #1c2833; font-size: 15px; margin-top: 36px; text-transform: uppercase; letter-spacing: 1px; }
     .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px 24px; margin: 16px 0; text-decoration: none; display: block; color: inherit; }
     .card:hover { border-color: #c0392b; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     .card h3 { margin: 0 0 6px; color: #c0392b; font-size: 15px; }
     .card p { margin: 0; color: #555; font-size: 13px; line-height: 1.5; }
     .badge { display: inline-block; background: #c0392b; color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-bottom: 8px; font-weight: 700; }
-    footer { margin-top: 40px; font-size: 12px; color: #888; text-align: center; }
+    .cita {
+      background: #fff;
+      border-left: 5px solid #c0392b;
+      border-radius: 0 6px 6px 0;
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-size: 15px;
+      font-style: italic;
+      line-height: 1.7;
+      color: #2c2c2c;
+    }
+    .cita ol { margin: 14px 0 0 20px; font-style: normal; font-size: 14px; }
+    .cita li { margin-bottom: 8px; }
+    .reflexion {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #333;
+    }
+    .reflexion h3 {
+      font-size: 15px;
+      color: #1c2833;
+      margin: 0 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    .reflexion p { margin-bottom: 14px; }
+    .reflexion p:last-child { margin-bottom: 0; }
+    footer { margin-top: 40px; font-size: 12px; color: #888; text-align: center; padding-bottom: 40px; }
   </style>
 </head>
 <body>
   <h1>Auditoría de Seguridad<br>Sistema de Resultados Electorales ONPE 2026</h1>
-  <p style="color:#555; font-size:14px;">Investigación defensiva sobre vulnerabilidades identificadas en la API pública de resultados de las Elecciones Generales Perú 2026. Toda la evidencia es técnicamente reproducible.</p>
+  <p style="color:#555; font-size:14px; margin-bottom:28px;">Investigación defensiva sobre vulnerabilidades identificadas en la API pública de resultados de las Elecciones Generales Perú 2026. Toda la evidencia es técnicamente reproducible.</p>
+
+  <div class="cita">
+    Un sistema electoral no necesita ser hackeado para que sus vulnerabilidades importen. Basta con que
+    generen desconfianza legítima o habiliten ventajas informacionales asimétricas entre actores políticos.
+    <br><br>
+    Las vulnerabilidades encontradas no alteran resultados, pero sí:
+    <ol>
+      <li>Violan la privacidad de 27 millones de electores al exponer la correlación DNI → mesa sin ningún control de acceso</li>
+      <li>Exponen la arquitectura interna del sistema de cómputo oficial a cualquier actor, lo que en un contexto de disputas electorales es una superficie de ataque para desinformación técnica</li>
+      <li>Imposibilitan una auditoría retroactiva del acceso al padrón digital, porque no hay rate limiting que genere registros de anomalía</li>
+    </ol>
+  </div>
+
+  <div class="reflexion">
+    <h3>Por qué no auditamos antes — y por qué eso nos hace cómplices</h3>
+    <p>
+      Los peruanos confiamos en la ONPE. Y esa confianza, ejercida sin verificación, es exactamente lo que
+      permite que sistemas como este lleguen a producción sin escrutinio. La confianza ciega en instituciones
+      públicas no es virtud cívica — es abdicación de responsabilidad colectiva.
+    </p>
+    <p>
+      La comunidad técnica peruana — desarrolladores, ingenieros de software, especialistas en seguridad —
+      tiene herramientas, conocimiento y acceso para hacer exactamente lo que documenta este informe.
+      No requiere vulnerar ningún sistema. No requiere violar ninguna ley. Requiere tiempo, criterio técnico,
+      y la voluntad de hacer el trabajo.
+    </p>
+    <p>
+      Esa auditoría debió ocurrir antes del 10 de abril. Debió ocurrir antes del despliegue del 14 de abril.
+      Debió ser parte del proceso institucional de verificación del sistema electoral. No lo fue. Y ahora,
+      con más de 5,000 actas enviadas al JEE, con actas físicas encontradas en la calle, con pedidos de
+      anulación en curso, estamos preguntándonos si el proceso fue limpio — sin poder responder con certeza
+      técnica, porque nadie hizo la tarea a tiempo.
+    </p>
+  </div>
 
   <h2>Documentos disponibles</h2>
 
