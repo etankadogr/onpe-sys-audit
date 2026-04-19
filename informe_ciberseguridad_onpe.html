@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informe de Ciberseguridad — API ONPE 2026</title>
+  <style>
+    :root {
+      --rojo:     #c0392b;
+      --naranja:  #e67e22;
+      --amarillo: #f39c12;
+      --azul:     #2471a3;
+      --verde:    #1e8449;
+      --gris-osc: #1c2833;
+      --gris-med: #2e4053;
+      --gris-cla: #f2f3f4;
+      --borde:    #d5d8dc;
+      --texto:    #212121;
+      --codigo-bg:#1e272e;
+      --codigo-fg:#dfe6e9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 14px;
+      color: var(--texto);
+      background: #f5f6fa;
+      line-height: 1.6;
+    }
+
+    /* ── PORTADA ── */
+    .portada {
+      background: linear-gradient(135deg, var(--gris-osc) 0%, var(--gris-med) 100%);
+      color: #fff;
+      padding: 60px 80px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+    .portada::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .portada::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+    }
+    .portada-badge {
+      display: inline-block;
+      background: var(--rojo);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 3px;
+      margin-bottom: 20px;
+    }
+    .portada h1 {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .portada h2 {
+      font-size: 18px;
+      font-weight: 300;
+      color: #aab7c4;
+      margin-bottom: 40px;
+    }
+    .portada-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+      margin-top: 30px;
+    }
+    .portada-meta-item {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 12px 16px;
+    }
+    .portada-meta-item .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #aab7c4;
+      margin-bottom: 4px;
+    }
+    .portada-meta-item .val {
+      font-size: 13px;
+      color: #ecf0f1;
+      font-weight: 500;
+    }
+
+    /* ── LAYOUT ── */
+    .contenido {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+    }
+
+    /* ── TOC ── */
+    .toc {
+      background: #fff;
+      border: 1px solid var(--borde);
+      border-left: 4px solid var(--azul);
+      border-radius: 6px;
+      padding: 24px 28px;
+      margin-bottom: 40px;
+    }
+    .toc h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--azul);
+      margin-bottom: 14px;
+    }
+    .toc ol {
+      padding-left: 20px;
+    }
+    .toc li {
+      margin-bottom: 5px;
+    }
+    .toc a {
+      color: var(--gris-med);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .toc a:hover { color: var(--azul); text-decoration: underline; }
+
+    /* ── SECCIONES ── */
+    .seccion {
+      background: #fff;
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .seccion-header {
+      background: var(--gris-osc);
+      color: #fff;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .seccion-num {
+      background: var(--azul);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .seccion-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .seccion-body { padding: 24px 28px; }
+
+    /* ── RESUMEN EJECUTIVO ── */
+    .resumen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 16px;
+    }
+    .stat-card {
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-card.alta   { background: #fdf0f0; border: 2px solid var(--rojo); }
+    .stat-card.media  { background: #fef9ec; border: 2px solid var(--amarillo); }
+    .stat-card.baja   { background: #eaf6fb; border: 2px solid var(--azul); }
+    .stat-card.total  { background: #eafaf1; border: 2px solid var(--verde); }
+    .stat-card .num {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-card.alta   .num { color: var(--rojo); }
+    .stat-card.media  .num { color: var(--naranja); }
+    .stat-card.baja   .num { color: var(--azul); }
+    .stat-card.total  .num { color: var(--verde); }
+    .stat-card .lbl { font-size: 13px; font-weight: 600; color: #555; }
+    .stat-card .sub { font-size: 11px; color: #888; margin-top: 4px; }
+
+    .resumen-texto {
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .resumen-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    /* ── ARQUITECTURA ── */
+    .arq-box {
+      background: var(--codigo-bg);
+      color: var(--codigo-fg);
+      border-radius: 8px;
+      padding: 24px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      margin: 16px 0;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    /* ── TABLA HALLAZGOS ── */
+    .hallazgos-tabla {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 16px 0;
+    }
+    .hallazgos-tabla th {
+      background: var(--gris-osc);
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .hallazgos-tabla td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--borde);
+      vertical-align: middle;
+    }
+    .hallazgos-tabla tr:hover td { background: #f8f9fa; }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .badge-alta   { background: #fdf0f0; color: var(--rojo);    border: 1px solid var(--rojo); }
+    .badge-media  { background: #fef9ec; color: #b7770d;        border: 1px solid var(--amarillo); }
+    .badge-baja   { background: #eaf6fb; color: var(--azul);    border: 1px solid var(--azul); }
+    .badge-info   { background: #f4f6f7; color: #555;           border: 1px solid #ccc; }
+    .badge-ok     { background: #eafaf1; color: var(--verde);   border: 1px solid var(--verde); }
+
+    /* ── HALLAZGO CARD ── */
+    .hallazgo-card {
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .hallazgo-header {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hallazgo-header.alta   { background: #fdf0f0; border-left: 5px solid var(--rojo); }
+    .hallazgo-header.media  { background: #fef9ec; border-left: 5px solid var(--amarillo); }
+    .hallazgo-header.baja   { background: #eaf6fb; border-left: 5px solid var(--azul); }
+    .hallazgo-id {
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--gris-osc);
+    }
+    .hallazgo-titulo {
+      font-weight: 600;
+      font-size: 14px;
+      flex: 1;
+    }
+    .hallazgo-cvss {
+      font-size: 11px;
+      font-family: monospace;
+      background: var(--gris-osc);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .hallazgo-body { padding: 20px 24px; }
+    .hallazgo-body h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #888;
+      margin: 16px 0 6px;
+    }
+    .hallazgo-body h4:first-child { margin-top: 0; }
+    .hallazgo-body p { margin-bottom: 10px; font-size: 13px; line-height: 1.7; }
+
+    /* ── CÓDIGO ── */
+    pre, code {
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+    pre {
+      background: var(--codigo-bg);
+      color: var(--codigo-fg);
+      border-radius: 6px;
+      padding: 16px 18px;
+      font-size: 12.5px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+    code {
+      background: #eaecee;
+      color: #c0392b;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    pre code { background: none; color: inherit; padding: 0; }
+
+    /* ── TABLAS GENERALES ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 14px 0;
+    }
+    th {
+      background: #f2f3f4;
+      color: var(--gris-osc);
+      padding: 9px 12px;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 2px solid var(--borde);
+    }
+    td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--borde);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8f9fa; }
+    td code { font-size: 11.5px; }
+
+    /* ── NOTA / ALERTA ── */
+    .nota {
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .nota-info    { background: #eaf6fb; border-left: 4px solid var(--azul); }
+    .nota-warn    { background: #fef9ec; border-left: 4px solid var(--amarillo); }
+    .nota-danger  { background: #fdf0f0; border-left: 4px solid var(--rojo); }
+    .nota-ok      { background: #eafaf1; border-left: 4px solid var(--verde); }
+    .nota strong  { display: block; margin-bottom: 4px; }
+
+    /* ── ENDPOINTS ── */
+    .endpoint-grupo {
+      margin-bottom: 28px;
+    }
+    .endpoint-grupo h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--azul);
+      border-bottom: 2px solid var(--azul);
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+    .endpoint-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 5px;
+      margin-bottom: 4px;
+      border: 1px solid var(--borde);
+      font-size: 12.5px;
+    }
+    .endpoint-row:hover { background: #f8f9fa; }
+    .method-get {
+      background: #1e8449;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .method-post {
+      background: #2471a3;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .endpoint-path {
+      font-family: 'Consolas', monospace;
+      font-size: 12px;
+      color: var(--gris-osc);
+      font-weight: 600;
+      min-width: 380px;
+    }
+    .endpoint-desc {
+      color: #555;
+      line-height: 1.5;
+    }
+    .endpoint-star { color: #f39c12; margin-right: 3px; }
+
+    /* ── MITIGACIONES ── */
+    .mitigation-list {
+      padding-left: 0;
+      list-style: none;
+    }
+    .mitigation-list li {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      align-items: flex-start;
+    }
+    .mitigation-list li::before {
+      content: '→';
+      color: var(--verde);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── RECOMENDACIONES ── */
+    .rec-card {
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .rec-header {
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .rec-header.urgente { background: #fdf0f0; color: var(--rojo); }
+    .rec-header.corto   { background: #fef9ec; color: #b7770d; }
+    .rec-header.mediano { background: #eaf6fb; color: var(--azul); }
+    .rec-body { padding: 14px 16px; }
+    .rec-body ol { padding-left: 18px; }
+    .rec-body li { margin-bottom: 8px; font-size: 13px; line-height: 1.6; }
+
+    /* ── PRUEBAS SIN HALLAZGOS ── */
+    .check-ok { color: var(--verde); font-weight: 700; }
+    .check-na { color: #888; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--gris-osc);
+      color: #aab7c4;
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      margin-top: 40px;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: #fff; }
+      .seccion { break-inside: avoid; }
+      .portada { break-after: page; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ PORTADA ═══════════════════════════════ -->
+<div class="portada">
+  <div class="portada-badge">Confidencial — Investigación Defensiva</div>
+  <h1>Informe de Ciberseguridad<br>API de Resultados Electorales ONPE</h1>
+  <h2>Elecciones Generales y Parlamento Andino — Perú 2026</h2>
+  <div class="portada-meta">
+    <div class="portada-meta-item">
+      <div class="label">Sistema auditado</div>
+      <div class="val">resultadoelectoral.onpe.gob.pe</div>
+    </div>
+    <div class="portada-meta-item">
+      <div class="label">Fecha de análisis</div>
+      <div class="val">19 de abril de 2026</div>
+    </div>
+    <div class="portada-meta-item">
+      <div class="label">Infraestructura detectada</div>
+      <div class="val">AWS CloudFront + NGINX + Spring Boot</div>
+    </div>
+    <div class="portada-meta-item">
+      <div class="label">Marco legal</div>
+      <div class="val">Ley N° 27806 · D.L. 1412 · ODC-BY</div>
+    </div>
+    <div class="portada-meta-item">
+      <div class="label">Clasificación</div>
+      <div class="val">Investigación defensiva — uso académico e informativo</div>
+    </div>
+    <div class="portada-meta-item">
+      <div class="label">Analista</div>
+      <div class="val">Investigación independiente</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ CONTENIDO ═══════════════════════════════ -->
+<div class="contenido">
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Tabla de contenidos</h3>
+    <ol>
+      <li><a href="#s1">Resumen Ejecutivo</a></li>
+      <li><a href="#s2">Metodología</a></li>
+      <li><a href="#s3">Arquitectura del Sistema</a></li>
+      <li><a href="#s4">Catálogo Completo de Endpoints</a></li>
+      <li><a href="#s5">Hallazgos de Seguridad</a></li>
+      <li><a href="#s6">Pruebas sin Hallazgos</a></li>
+      <li><a href="#s7">Recomendaciones Priorizadas</a></li>
+      <li><a href="#s8">Contexto Legal y Ético</a></li>
+      <li><a href="#s9">Anexo — Verificación del Swagger</a></li>
+    </ol>
+  </div>
+
+  <!-- ══ S1: RESUMEN EJECUTIVO ══ -->
+  <div class="seccion" id="s1">
+    <div class="seccion-header">
+      <div class="seccion-num">1</div>
+      <h2>Resumen Ejecutivo</h2>
+    </div>
+    <div class="seccion-body">
+      <p class="resumen-texto">
+        Se realizó un análisis de seguridad defensivo sobre la API pública de resultados electorales de la
+        <strong>Oficina Nacional de Procesos Electorales (ONPE)</strong> del Perú, desplegada durante las
+        Elecciones Generales 2026. El sistema es accesible sin autenticación y sirve datos electorales en
+        tiempo real a la ciudadanía.
+      </p>
+      <div class="resumen-stats-row">
+        <div class="stat-card total">
+          <div class="num">7</div>
+          <div class="lbl">Vulnerabilidades</div>
+          <div class="sub">Total identificadas</div>
+        </div>
+        <div class="stat-card alta">
+          <div class="num">2</div>
+          <div class="lbl">Severidad Alta</div>
+          <div class="sub">CVSS ≥ 7.0</div>
+        </div>
+        <div class="stat-card media">
+          <div class="num">3</div>
+          <div class="lbl">Severidad Media</div>
+          <div class="sub">CVSS 4.0 – 6.9</div>
+        </div>
+        <div class="stat-card baja">
+          <div class="num">2</div>
+          <div class="lbl">Severidad Baja</div>
+          <div class="sub">CVSS &lt; 4.0</div>
+        </div>
+      </div>
+      <p class="resumen-texto">
+        Los hallazgos más críticos son la <strong>exposición del endpoint de padrón electoral</strong>
+        (<code>/padron/mesa/{dni}</code>) sin ningún control de acceso ni rate limiting, y la
+        <strong>documentación técnica completa de la API</strong> (Swagger UI + OpenAPI 3.1) accesible
+        públicamente, que expone 65 endpoints internos, nombres de usuarios de sistema y URLs de
+        entornos de desarrollo.
+      </p>
+      <p class="resumen-texto">
+        Se descubrieron además <strong>30+ endpoints no documentados oficialmente</strong>, incluyendo
+        endpoints para todas las elecciones del proceso (Diputados, Senadores, Parlamento Andino),
+        endpoints de administración de caché y el endpoint de mapa de calor del frontend.
+      </p>
+      <table class="hallazgos-tabla">
+        <thead>
+          <tr>
+            <th>#</th><th>Vulnerabilidad</th><th>Severidad</th><th>CVSS 3.1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>H1</td><td>Control de acceso por headers HTTP manipulables</td><td><span class="badge badge-media">Media</span></td><td>5.3</td></tr>
+          <tr><td>H2</td><td>Ausencia de rate limiting</td><td><span class="badge badge-media">Media</span></td><td>5.8</td></tr>
+          <tr><td>H3</td><td><code>/padron/mesa/{dni}</code> sin autenticación ni rate limiting</td><td><span class="badge badge-alta">Alta</span></td><td>7.5</td></tr>
+          <tr><td>H4</td><td>Swagger UI + OpenAPI públicos con datos internos</td><td><span class="badge badge-alta">Alta</span></td><td>7.5</td></tr>
+          <tr><td>H5</td><td>Paginación sin límite máximo (DoS potencial)</td><td><span class="badge badge-media">Media</span></td><td>5.3</td></tr>
+          <tr><td>H6</td><td>HSTS sin <code>includeSubDomains</code> ni <code>preload</code></td><td><span class="badge badge-baja">Baja</span></td><td>3.7</td></tr>
+          <tr><td>H7</td><td>CSP con <code>unsafe-inline</code> / <code>unsafe-eval</code> y nonce no inyectado</td><td><span class="badge badge-baja">Baja</span></td><td>4.3</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ S2: METODOLOGÍA ══ -->
+  <div class="seccion" id="s2">
+    <div class="seccion-header">
+      <div class="seccion-num">2</div>
+      <h2>Metodología</h2>
+    </div>
+    <div class="seccion-body">
+      <p style="margin-bottom:14px; font-size:13px;">El análisis se realizó exclusivamente mediante técnicas pasivas y no intrusivas:</p>
+      <table>
+        <thead><tr><th>Técnica</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Reconocimiento pasivo</strong></td><td>Inspección del HTML y JavaScript del frontend Angular (SPA) para extraer rutas de la API referenciadas en el código compilado</td></tr>
+          <tr><td><strong>Análisis de tráfico</strong></td><td>Observación de peticiones HTTP mediante DevTools del navegador (Network tab) durante la navegación normal por la aplicación</td></tr>
+          <tr><td><strong>Enumeración de endpoints</strong></td><td>Prueba de variantes lógicas de endpoints conocidos con parámetros válidos, siguiendo la nomenclatura observada en el código JS</td></tr>
+          <tr><td><strong>Inspección de headers HTTP</strong></td><td>Análisis de headers de respuesta para identificar tecnología, configuración de seguridad y metadata del servidor</td></tr>
+          <tr><td><strong>Pruebas de seguridad no destructivas</strong></td><td>Inyecciones básicas (SQL, path traversal), CORS, métodos HTTP no estándar — todas rechazadas sin impacto en el servicio</td></tr>
+          <tr><td><strong>Wayback Machine</strong></td><td>Consulta a Internet Archive para determinar fechas de cambios en endpoints de documentación</td></tr>
+        </tbody>
+      </table>
+      <div class="nota nota-ok" style="margin-top:16px;">
+        <strong>Alcance del análisis</strong>
+        No se realizaron: ataques de fuerza bruta, enumeración masiva del padrón, modificación de datos, acceso a sistemas internos, ni ninguna acción destructiva o que pudiera comprometer la integridad del proceso electoral.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S3: ARQUITECTURA ══ -->
+  <div class="seccion" id="s3">
+    <div class="seccion-header">
+      <div class="seccion-num">3</div>
+      <h2>Arquitectura del Sistema</h2>
+    </div>
+    <div class="seccion-body">
+      <div class="arq-box">Internet
+    │
+    ▼
+AWS CloudFront  (CDN + WAF)   pop: LIM50-P4 — Lima, Perú
+    │
+    ├── Rutas estáticas ──────→  S3 Bucket  (Angular SPA: HTML, CSS, JS)
+    │       └── ⚠  HTML servido sin procesamiento NGINX
+    │              (placeholder NGINX_CSP_NONCE no reemplazado — ver H7)
+    │
+    └── /presentacion-backend/* ──→  Backend  Spring Boot
+                │
+                ├── SpringDoc OpenAPI 3.1  (65 endpoints documentados)
+                ├── Spring Boot Actuator   (health check expuesto)
+                ├── Base de datos electoral (PostgreSQL/Oracle presumido)
+                └── Servicio de firma digital  (servicioFirma: true)</div>
+
+      <table style="margin-top:16px;">
+        <thead><tr><th>Componente</th><th>Tecnología identificada</th><th>Evidencia</th></tr></thead>
+        <tbody>
+          <tr><td>CDN / WAF</td><td>Amazon CloudFront</td><td>Header <code>Server: CloudFront</code>, <code>X-Amz-Cf-Pop: LIM50-P4</code></td></tr>
+          <tr><td>Web server</td><td>NGINX</td><td>Placeholder <code>NGINX_CSP_NONCE</code> en HTML</td></tr>
+          <tr><td>Backend</td><td>Java Spring Boot + SpringDoc</td><td><code>/actuator/health</code>, <code>/v3/api-docs</code>, Content-Type <code>application/vnd.spring-boot.actuator.v3+json</code></td></tr>
+          <tr><td>Frontend</td><td>Angular SPA</td><td><code>&lt;app-root&gt;</code>, bundles <code>main-KMH5OOBC.js</code></td></tr>
+          <tr><td>Analytics</td><td>Google Tag Manager + GA4</td><td>GTM-K2PQDMLF, cookie <code>_ga_7X9XC2V582</code></td></tr>
+          <tr><td>Último despliegue</td><td>14 abril 2026 — 04:38:54 GMT</td><td>Header <code>Last-Modified</code> del Swagger UI</td></tr>
+          <tr><td>Entorno desarrollo</td><td><code>resultadoelectoraldesarrollo.dev.onpe.gob.pe</code></td><td>Expuesto en <code>/v3/api-docs</code> (campo <code>servers</code>)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ S4: ENDPOINTS ══ -->
+  <div class="seccion" id="s4">
+    <div class="seccion-header">
+      <div class="seccion-num">4</div>
+      <h2>Catálogo Completo de Endpoints</h2>
+    </div>
+    <div class="seccion-body">
+
+      <p style="font-size:13px; margin-bottom:6px;"><strong>Base URL:</strong> <code>https://resultadoelectoral.onpe.gob.pe/presentacion-backend</code></p>
+
+      <!-- Headers -->
+      <div class="nota nota-warn" style="margin-bottom:20px;">
+        <strong>Headers requeridos para acceso</strong>
+        El sistema utiliza un mecanismo de control de acceso basado en headers HTTP (ver H1). La cookie <code>_ga_*</code> de Google Analytics <strong>NO es requerida</strong> — solo es tracking de analytics.
+      </div>
+      <pre>user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
+sec-fetch-mode: cors
+sec-fetch-site: same-origin
+accept: */*
+referer: https://resultadoelectoral.onpe.gob.pe/main/presidenciales</pre>
+
+      <p style="font-size:12px; color:#888; margin: 4px 0 20px;">Ejemplo en Python:</p>
+      <pre>import urllib.request, json
+
+HEADERS = {
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'accept': '*/*',
+}
+
+def get(url):
+    req = urllib.request.Request(url, headers=HEADERS)
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.loads(r.read().decode('utf-8'))</pre>
+
+      <!-- Documentación técnica -->
+      <div class="endpoint-grupo">
+        <h3>Documentación técnica (acceso directo)</h3>
+        <div class="nota nota-danger" style="margin-bottom:10px;">
+          <strong>Hallazgo de seguridad H4:</strong> estos endpoints están accesibles sin autenticación desde producción.
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/swagger-ui/index.html</span>
+          <span class="endpoint-desc">Swagger UI interactivo completo — 65 endpoints documentados. <strong>Last-Modified: 14-abr-2026</strong></span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/v3/api-docs</span>
+          <span class="endpoint-desc">Especificación OpenAPI 3.1 completa (89 KB JSON) — expone URLs de desarrollo e internos de sistema</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/actuator/health</span>
+          <span class="endpoint-desc"><code>{"status":"UP"}</code> — estado del servicio Spring Boot</span>
+        </div>
+        <div class="nota nota-info" style="margin-top:8px; font-size:12px;">
+          <strong>Nota:</strong> <code>/swagger-ui.html</code> (URL legacy SpringFox) es interceptada por CloudFront y devuelve el frontend Angular. La URL correcta es <code>/swagger-ui/index.html</code> (SpringDoc).
+        </div>
+      </div>
+
+      <!-- Proceso -->
+      <div class="endpoint-grupo">
+        <h3>Proceso y Metadata</h3>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/proceso/proceso-electoral-activo</span>
+          <span class="endpoint-desc">Info del proceso activo: id, nombre "EG2026", idEleccionPrincipal=10, tipo "bicameralidad"</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/fecha/listarFecha</span>
+          <span class="endpoint-desc"><strong>Timestamp de última actualización</strong> (<code>fechaProceso</code>) y flag <code>servicioFirma</code>. Alternativa eficiente a consultar 30 departamentos para detectar cambios en el cómputo</span>
+        </div>
+      </div>
+
+      <!-- Geografía -->
+      <div class="endpoint-grupo">
+        <h3>Geografía — Ubigeos</h3>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/ubigeos/departamentos</span>
+          <span class="endpoint-desc"><code>?idEleccion=10&amp;idAmbitoGeografico=1</code> — 25 departamentos con ubigeo (<code>DDDOOO</code>, ej: <code>140000</code>=Lima)</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/ubigeos/departamentos</span>
+          <span class="endpoint-desc"><code>?idEleccion=10&amp;idAmbitoGeografico=2</code> — 5 continentes (voto extranjero)</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/ubigeos/provincias</span>
+          <span class="endpoint-desc"><code>?idEleccion=10&amp;idAmbitoGeografico=1&amp;idUbigeoDepartamento={DDD000}</code> — provincias de un departamento</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/ubigeos/distritos</span>
+          <span class="endpoint-desc"><code>?idEleccion=10&amp;idAmbitoGeografico=1&amp;idUbigeoProvincia={DDPP00}</code> — distritos de una provincia</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/ubigeos/locales</span>
+          <span class="endpoint-desc"><code>?idUbigeo={DDPPDD}</code> — locales de votación de un distrito</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/ubigeos/dep-prov-distritos</span>
+          <span class="endpoint-desc"><code>?idEleccion=10&amp;idAmbitoGeografico=1</code> — jerarquía completa DEPTO\PROV\DISTRITO en un solo request</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/distrito-electoral/distritos</span>
+          <span class="endpoint-desc">27 distritos electorales para la elección de Diputados</span>
+        </div>
+      </div>
+
+      <!-- Presidencial -->
+      <div class="endpoint-grupo">
+        <h3>Resultados — Presidencial (idEleccion=10)</h3>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/eleccion-presidencial/participantes-ubicacion-geografica-nombre</span>
+          <span class="endpoint-desc"><span class="endpoint-star">★</span><code>?idEleccion=10&amp;tipoFiltro=eleccion</code> — <strong>NACIONAL OFICIAL</strong> — votos por partido + blancos + nulos. Fuente autoritativa (coincide con la web pública)</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/eleccion-presidencial/participantes-organizacion-politica</span>
+          <span class="endpoint-desc"><code>?idEleccion=10&amp;tipoFiltro=eleccion</code> — votos por candidato individual con DNI y porcentajes</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/resumen-general/participantes</span>
+          <span class="endpoint-desc"><code>?idEleccion=10&amp;tipoFiltro=ubigeo_nivel_01&amp;idAmbitoGeografico=1&amp;idUbigeoDepartamento={ubi}</code> — votos por partido en un departamento</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/resumen-general/participantes</span>
+          <span class="endpoint-desc"><code>?idEleccion=10&amp;tipoFiltro=ubigeo_nivel_02&amp;idAmbitoGeografico=1&amp;idUbigeoProvincia={ubi}</code> — votos por partido en una provincia</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/resumen-general/totales</span>
+          <span class="endpoint-desc"><code>?idEleccion=10&amp;tipoFiltro=ubigeo_nivel_01&amp;idAmbitoGeografico=1&amp;idUbigeoDepartamento={ubi}</code> — actas contabilizadas/JEE/pendientes + <strong>fechaActualizacion</strong> (timestamp ms)</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/resumen-general/mapa-calor</span>
+          <span class="endpoint-desc"><code>?idEleccion=10&amp;codigoAgrupacionPolitica={cod}&amp;idAmbitoGeografico=1&amp;tipoFiltro=ubigeo_nivel_01</code> — datos del mapa interactivo por partido y zona</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/mesa/totales</span>
+          <span class="endpoint-desc"><code>?tipoFiltro=eleccion</code> — mesasInstaladas, mesasPendientes, mesasNoInstaladas (nacional)</span>
+        </div>
+      </div>
+
+      <!-- Actas -->
+      <div class="endpoint-grupo">
+        <h3>Actas</h3>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/actas</span>
+          <span class="endpoint-desc"><code>?pagina=0&amp;tamanio=100&amp;idAmbitoGeografico=1&amp;idUbigeo={DDPPDD}</code> — todas las actas de un distrito con codigoEstadoActa (C/E/P/O)</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/actas/observadas</span>
+          <span class="endpoint-desc"><code>?pagina=0&amp;tamanio=100&amp;idAmbitoGeografico=1&amp;idUbigeo={DDPPDD}</code> — solo actas código E (Para envío al JEE)</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/actas/{id}</span>
+          <span class="endpoint-desc">Detalle completo de un acta: votos, electores hábiles, línea de tiempo de estados</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/actas/buscar/mesa</span>
+          <span class="endpoint-desc"><code>?codigoMesa={codigo}</code> — acta completa dado un código de mesa: todos los votos por partido y candidato</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/actas/file</span>
+          <span class="endpoint-desc"><code>?id={id}</code> — descarga del archivo escaneado del acta</span>
+        </div>
+      </div>
+
+      <!-- Parlamento Andino -->
+      <div class="endpoint-grupo">
+        <h3>Parlamento Andino (idEleccion=12)</h3>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/parlamento-andino/participantes-ubicacion-geografica-nombre</span>
+          <span class="endpoint-desc"><code>?idEleccion=12&amp;tipoFiltro=eleccion</code> — votos por partido + blancos/nulos (equivalente al nacional presidencial)</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/parlamento-andino/participantes-por-candidato</span>
+          <span class="endpoint-desc"><code>?idEleccion=12&amp;tipoFiltro=eleccion&amp;idAgrupacionPolitica={cod}</code> — candidatos de un partido con votos y posición en lista</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/parlamento-andino/organizacion-politica</span>
+          <span class="endpoint-desc"><code>?idEleccion=12&amp;tipoFiltro=eleccion</code> — lista de partidos con codigoAgrupacionPolitica</span>
+        </div>
+      </div>
+
+      <!-- Senadores -->
+      <div class="endpoint-grupo">
+        <h3>Senadores Distrito Único — 33 senadores nacionales (idEleccion=15)</h3>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/senadores-distrito-unico/participantes-ubicacion-geografica-nombre</span>
+          <span class="endpoint-desc"><code>?idEleccion=15&amp;tipoFiltro=eleccion</code> — votos por partido + blancos/nulos</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/senadores-distrito-unico/participantes-por-candidato</span>
+          <span class="endpoint-desc"><code>?idEleccion=15&amp;tipoFiltro=eleccion&amp;idAgrupacionPolitica={cod}</code> — candidatos senadores de un partido</span>
+        </div>
+      </div>
+
+      <!-- Diputados -->
+      <div class="endpoint-grupo">
+        <h3>Diputados — 130 escaños (idEleccion=13)</h3>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/eleccion-diputado/participantes-por-candidato-nombre</span>
+          <span class="endpoint-desc"><code>?idEleccion=13&amp;tipoFiltro=eleccion&amp;idDistritoElectoral={id}&amp;idAgrupacionPolitica={cod}</code> — candidatos con DNI, votos y posición en lista</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/eleccion-diputado/participantes-ubicacion-geografica-nombre</span>
+          <span class="endpoint-desc"><code>?idEleccion=13&amp;tipoFiltro=eleccion&amp;idDistritoElectoral={id}</code> — votos por partido en un distrito electoral</span>
+        </div>
+      </div>
+
+      <!-- Padrón -->
+      <div class="endpoint-grupo">
+        <h3>Padrón Electoral</h3>
+        <div class="nota nota-danger">
+          <strong>Hallazgo crítico H3 — ver sección 5</strong>
+        </div>
+        <div class="endpoint-row" style="border-color: var(--rojo);">
+          <span class="method-get">GET</span>
+          <span class="endpoint-path">/padron/mesa/{dni}</span>
+          <span class="endpoint-desc">Mesa de votación asignada al DNI dado. Sin autenticación ni rate limiting. Activo durante el período electoral. Respuesta: <code>{"dni":"12345678","mesa":"059318"}</code></span>
+        </div>
+      </div>
+
+      <!-- Parámetros -->
+      <div class="endpoint-grupo">
+        <h3>Referencia rápida de parámetros</h3>
+        <table>
+          <thead><tr><th>Parámetro</th><th>Valores</th></tr></thead>
+          <tbody>
+            <tr><td><code>idEleccion</code></td><td><code>10</code>=Presidencial · <code>12</code>=Parl. Andino · <code>13</code>=Diputados · <code>14</code>=Senadores múltiple · <code>15</code>=Senadores único</td></tr>
+            <tr><td><code>idAmbitoGeografico</code></td><td><code>1</code>=Nacional · <code>2</code>=Extranjero</td></tr>
+            <tr><td><code>tipoFiltro</code></td><td><code>eleccion</code> (nacional) · <code>ubigeo_nivel_01</code> (depto) · <code>ubigeo_nivel_02</code> (provincia)</td></tr>
+            <tr><td><code>idUbigeoDepartamento</code></td><td>Formato <code>DDDOOO</code> — ej: <code>140000</code>=Lima, <code>150000</code>=Loreto</td></tr>
+            <tr><td><code>idUbigeoProvincia</code></td><td>Formato <code>DDPPOO</code> — ej: <code>140100</code>=Lima Prov.</td></tr>
+            <tr><td><code>idUbigeo</code> (actas)</td><td>Formato <code>DDPPDD</code> — ej: <code>140101</code>=Lima distrito</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ S5: HALLAZGOS ══ -->
+  <div class="seccion" id="s5">
+    <div class="seccion-header">
+      <div class="seccion-num">5</div>
+      <h2>Hallazgos de Seguridad</h2>
+    </div>
+    <div class="seccion-body">
+
+      <!-- H1 -->
+      <div class="hallazgo-card">
+        <div class="hallazgo-header media">
+          <span class="hallazgo-id">H1</span>
+          <span class="hallazgo-titulo">Control de acceso basado en headers HTTP manipulables</span>
+          <span class="badge badge-media">Media</span>
+          <span class="hallazgo-cvss">CVSS 5.3 · AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N</span>
+        </div>
+        <div class="hallazgo-body">
+          <h4>Descripción</h4>
+          <p>El único mecanismo que diferencia un navegador legítimo de un bot es la presencia del header <code>sec-fetch-mode: cors</code>. Este header puede ser incluido libremente por cualquier script automatizado. No existe autenticación real de ningún tipo. La cookie <code>_ga_*</code> de Google Analytics tampoco es requerida para acceder a los datos.</p>
+          <h4>Evidencia</h4>
+          <pre># Acceso completo a la API sin cookie ni autenticación real:
+curl "https://resultadoelectoral.onpe.gob.pe/presentacion-backend/eleccion-presidencial/participantes-ubicacion-geografica-nombre?idEleccion=10&tipoFiltro=eleccion" \
+  -H "user-agent: Mozilla/5.0" \
+  -H "sec-fetch-mode: cors" \
+  -H "sec-fetch-site: same-origin"
+
+# → HTTP 200  |  JSON con todos los votos nacionales
+# Verificado: sec-fetch-site con valor "cross-site" también funciona (no validado)
+# Verificado: referer con cualquier dominio funciona (no validado)</pre>
+          <h4>Mitigación</h4>
+          <ul class="mitigation-list">
+            <li>Implementar API key o token CSRF real validado en el backend Spring Boot</li>
+            <li>Rate limiting por IP en CloudFront WAF como control compensatorio</li>
+            <li>Validar el header <code>Origin</code> contra una whitelist en la lógica del backend (actualmente CORS está bien configurado a nivel de respuesta, pero no bloquea el acceso)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- H2 -->
+      <div class="hallazgo-card">
+        <div class="hallazgo-header media">
+          <span class="hallazgo-id">H2</span>
+          <span class="hallazgo-titulo">Ausencia de rate limiting en todos los endpoints</span>
+          <span class="badge badge-media">Media</span>
+          <span class="hallazgo-cvss">CVSS 5.8 · AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:N/A:N</span>
+        </div>
+        <div class="hallazgo-body">
+          <h4>Descripción</h4>
+          <p>No existe ningún límite de velocidad en la API. 10 requests consecutivos respondieron uniformemente entre 33–52ms sin throttling, HTTP 429 ni CAPTCHA.</p>
+          <h4>Evidencia</h4>
+          <pre>req01: HTTP 200 — 42ms
+req02: HTTP 200 — 40ms
+req03: HTTP 200 — 39ms
+...
+req10: HTTP 200 — 41ms
+# Sin degradación, sin bloqueo, sin aviso</pre>
+          <h4>Impacto combinado con H3</h4>
+          <p>A 50ms por consulta, un único cliente puede realizar ~72,000 consultas/hora. Aplicado al endpoint <code>/padron/mesa/{dni}</code>, permitiría correlacionar masivamente el padrón de 27.3 millones de electores en pocas horas.</p>
+          <h4>Mitigación</h4>
+          <ul class="mitigation-list">
+            <li>Rate limiting por IP en WAF de CloudFront: máx. 60 req/min para endpoints de datos generales</li>
+            <li>Rate limiting severo en endpoints sensibles: máx. 10 req/min en <code>/padron/mesa/</code> y <code>/actas/</code></li>
+            <li>Detección de patrones de enumeración secuencial de parámetros numéricos (DNIs, ubigeos)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- H3 -->
+      <div class="hallazgo-card">
+        <div class="hallazgo-header alta">
+          <span class="hallazgo-id">H3</span>
+          <span class="hallazgo-titulo">/padron/mesa/{dni} sin autenticación ni rate limiting</span>
+          <span class="badge badge-alta">Alta</span>
+          <span class="hallazgo-cvss">CVSS 7.5 · AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N</span>
+        </div>
+        <div class="hallazgo-body">
+          <h4>Descripción</h4>
+          <p>El endpoint devuelve la mesa de votación asignada a cualquier ciudadano peruano dado su DNI, sin ningún control de acceso ni autenticación.</p>
+          <h4>Evidencia</h4>
+          <pre>GET /presentacion-backend/padron/mesa/10001088
+→ HTTP 200
+→ {"success":true,"data":{"dni":"10001088","mesa":"059318"}}
+
+GET /presentacion-backend/padron/mesa/07845838
+→ HTTP 200
+→ {"success":true,"data":{"dni":"07845838","mesa":"047934"}}
+
+# DNIs de candidatos presidenciales (documentos públicos del JNE)
+# usados para verificar el funcionamiento sin enumeración masiva</pre>
+          <h4>Impacto</h4>
+          <p>La combinación <strong>DNI + mesa de votación</strong> permite:</p>
+          <ul style="margin: 8px 0 12px 20px; font-size:13px; line-height:1.8;">
+            <li>Inferir el domicilio aproximado del elector (cada mesa corresponde a un local en un distrito específico)</li>
+            <li>Construir listas de votantes por zona geográfica a partir de bases de DNIs filtradas previas</li>
+            <li>Habilitar prácticas de clientelismo electoral dirigido o intimidación por zona</li>
+            <li>Correlacionar masivamente el padrón de <strong>27.3 millones de electores</strong> sin ningún obstáculo técnico</li>
+          </ul>
+          <div class="nota nota-info" style="margin-bottom:12px;">
+            <strong>Estado actual:</strong> El endpoint devuelve HTTP 204 (sin contenido) post-elección, indicando que está inactivo fuera del período electoral. Sin embargo, estuvo activo durante el día de la elección y el período de cómputo.
+          </div>
+          <h4>Mitigación (urgente para el próximo proceso electoral)</h4>
+          <ul class="mitigation-list">
+            <li>Requerir autenticación del propio elector: validación de DNI + fecha de nacimiento antes de devolver la mesa</li>
+            <li>Rate limiting severo: máx. 3 consultas/IP/hora, independientemente de la autenticación</li>
+            <li>Auditar los logs de acceso del endpoint para detectar si ocurrió enumeración masiva durante el proceso</li>
+            <li>Evaluar si el endpoint debe existir en la API pública o solo en el portal autenticado de onpe.gob.pe</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- H4 -->
+      <div class="hallazgo-card">
+        <div class="hallazgo-header alta">
+          <span class="hallazgo-id">H4</span>
+          <span class="hallazgo-titulo">Swagger UI + OpenAPI públicos con datos internos expuestos</span>
+          <span class="badge badge-alta">Alta</span>
+          <span class="hallazgo-cvss">CVSS 7.5 · AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N</span>
+        </div>
+        <div class="hallazgo-body">
+          <h4>Endpoints accesibles</h4>
+          <pre>GET /presentacion-backend/swagger-ui/index.html   → HTTP 200 — Swagger UI completo (Last-Modified: 14-abr-2026)
+GET /presentacion-backend/v3/api-docs             → HTTP 200 — OpenAPI 3.1 JSON (89 KB)
+GET /presentacion-backend/actuator/health         → HTTP 200 — {"status":"UP"}</pre>
+          <div class="nota nota-info">
+            <strong>Aclaración:</strong> la URL legacy <code>/swagger-ui.html</code> (SpringFox) es interceptada por CloudFront y devuelve el Angular SPA. La URL correcta de SpringDoc es <code>/swagger-ui/index.html</code> y está completamente accesible.
+          </div>
+          <h4>Datos sensibles expuestos en /v3/api-docs</h4>
+          <pre># URL del entorno de desarrollo interno:
+"servers": [
+  {"url": "https://resultadoelectoraldesarrollo.dev.onpe.gob.pe/presentacion-backend"},
+  {"url": "http://localhost:8080/presentacion-backend"}
+]
+
+# Endpoints administrativos documentados:
+/api/admin/cache/{cacheName}   ← invalidación de caché
+/api/admin/cache/all           ← limpieza total de caché
+/api/admin/cache/ubigeos       ← caché de ubigeos
+/revocatoria-distrital/participante
+/padron/mesa/{dni}             ← el endpoint del Hallazgo H3
+
+# Usuarios internos del sistema en campos de auditoría de respuestas públicas:
+"audUsuarioCreacion": "ADM_NACION_THUACCHARAQUI"
+"audUsuarioCreacion": "usuario-sce"
+
+# Flag de servicio de firma digital:
+"servicioFirma": true</pre>
+          <h4>Impacto</h4>
+          <ul style="margin: 8px 0 12px 20px; font-size:13px; line-height:1.8;">
+            <li>Cualquier atacante descubre y prueba endpoints administrativos sin reverse engineering del JS</li>
+            <li>Los nombres de usuarios internos son útiles para ingeniería social o credential stuffing en otros sistemas de ONPE</li>
+            <li>La URL de desarrollo permite inferir convenciones de nomenclatura de infraestructura interna</li>
+            <li>Los endpoints de administración de caché (<code>/api/admin/cache/*</code>), aunque actualmente bloqueados por CloudFront, son conocidos y podrían ser accesibles si cambia la configuración del WAF</li>
+          </ul>
+          <h4>Mitigación</h4>
+          <ul class="mitigation-list">
+            <li>Deshabilitar en producción: <code>springdoc.api-docs.enabled=false</code> y <code>springdoc.swagger-ui.enabled=false</code> en <code>application-prod.properties</code></li>
+            <li>Restringir Spring Actuator a IPs internas: <code>management.server.address=127.0.0.1</code></li>
+            <li>Filtrar campos de auditoría de respuestas públicas con <code>@JsonIgnore</code> en entidades o usando DTOs sin esos campos</li>
+            <li>Agregar regla en CloudFront WAF para bloquear <code>/swagger-ui/*</code> y <code>/v3/*</code> desde IPs externas como medida de defensa en profundidad</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- H5 -->
+      <div class="hallazgo-card">
+        <div class="hallazgo-header media">
+          <span class="hallazgo-id">H5</span>
+          <span class="hallazgo-titulo">Paginación sin límite máximo — DoS potencial</span>
+          <span class="badge badge-media">Media</span>
+          <span class="hallazgo-cvss">CVSS 5.3 · AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L</span>
+        </div>
+        <div class="hallazgo-body">
+          <h4>Evidencia</h4>
+          <pre>GET /actas?pagina=0&tamanio=99999&idAmbitoGeografico=1&idUbigeo=140101
+→ HTTP 200
+→ 5,150 registros — ~2.5 MB en una sola respuesta
+→ Sin límite documentado en el backend</pre>
+          <h4>Mitigación</h4>
+          <ul class="mitigation-list">
+            <li>Añadir <code>@Max(100)</code> al parámetro <code>tamanio</code> en el controlador Spring Boot y devolver HTTP 400 si se supera</li>
+            <li>Complementar con rate limiting por IP para evitar múltiples requests grandes en paralelo</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- H6 -->
+      <div class="hallazgo-card">
+        <div class="hallazgo-header baja">
+          <span class="hallazgo-id">H6</span>
+          <span class="hallazgo-titulo">HSTS sin includeSubDomains ni preload</span>
+          <span class="badge badge-baja">Baja</span>
+          <span class="hallazgo-cvss">CVSS 3.7 · AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N</span>
+        </div>
+        <div class="hallazgo-body">
+          <h4>Evidencia</h4>
+          <pre># Header actual:
+Strict-Transport-Security: max-age=31536000
+# Falta: includeSubDomains; preload</pre>
+          <h4>Mitigación</h4>
+          <ul class="mitigation-list">
+            <li>Actualizar a: <code>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</code></li>
+            <li>Registrar el dominio en <code>hstspreload.org</code> para inclusión en la lista precargada de navegadores</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- H7 -->
+      <div class="hallazgo-card">
+        <div class="hallazgo-header baja">
+          <span class="hallazgo-id">H7</span>
+          <span class="hallazgo-titulo">CSP con unsafe-inline / unsafe-eval y nonce no inyectado</span>
+          <span class="badge badge-baja">Baja</span>
+          <span class="hallazgo-cvss">CVSS 4.3 · AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N</span>
+        </div>
+        <div class="hallazgo-body">
+          <h4>7a — CSP con directivas inseguras</h4>
+          <pre>Content-Security-Policy: script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.createjs.com ...
+                         style-src  'self' 'unsafe-inline' ...</pre>
+          <h4>7b — Nonce CSP no reemplazado (bug de infraestructura)</h4>
+          <p>El HTML del frontend contiene el placeholder literal sin sustituir:</p>
+          <pre>&lt;meta name="csp-nonce" content="NGINX_CSP_NONCE"&gt;
+&lt;script nonce="NGINX_CSP_NONCE"&gt;...&lt;/script&gt;</pre>
+          <p>CloudFront sirve el HTML estático directamente desde S3 sin pasarlo por NGINX, por lo que el nonce nunca se inyecta. La directiva nonce de la CSP queda inoperativa, dejando <code>unsafe-inline</code> como único mecanismo activo para scripts inline.</p>
+          <h4>Mitigación</h4>
+          <ul class="mitigation-list">
+            <li>Asegurar que el HTML pase por NGINX antes de ser servido por CloudFront, para que el nonce se reemplace correctamente en cada request</li>
+            <li>Reemplazar <code>unsafe-inline</code> con nonces CSP generados por request en NGINX</li>
+            <li>Evaluar si <code>unsafe-eval</code> es realmente necesario para las librerías incluidas (amCharts, CreateJS)</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ S6: PRUEBAS SIN HALLAZGOS ══ -->
+  <div class="seccion" id="s6">
+    <div class="seccion-header">
+      <div class="seccion-num">6</div>
+      <h2>Pruebas sin Hallazgos — Comportamiento Defensivo Confirmado</h2>
+    </div>
+    <div class="seccion-body">
+      <table>
+        <thead>
+          <tr><th>Prueba</th><th>Resultado</th><th>Evaluación</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SQL injection (<code>idEleccion=10'</code>, <code>10 OR 1=1</code>, <code>10; DROP TABLE</code>)</td>
+            <td>CloudFront devuelve HTML del frontend</td>
+            <td><span class="check-ok">✓ Protegido</span> — rechazado a nivel de gateway</td>
+          </tr>
+          <tr>
+            <td>Path traversal (<code>/actas/../../../etc/passwd</code>, <code>%2e%2e%2f</code>)</td>
+            <td>CloudFront normaliza la ruta — devuelve HTML</td>
+            <td><span class="check-ok">✓ Protegido</span> — normalización en CDN</td>
+          </tr>
+          <tr>
+            <td>Métodos no estándar (POST / PUT / DELETE en endpoints GET)</td>
+            <td>CloudFront devuelve HTML — solo GET enrutado al backend</td>
+            <td><span class="check-ok">✓ Correcto</span></td>
+          </tr>
+          <tr>
+            <td>CORS con <code>Origin: https://evil.com</code></td>
+            <td><code>Access-Control-Allow-Origin: https://resultadoelectoral.onpe.gob.pe</code> (fijo)</td>
+            <td><span class="check-ok">✓ Correcto</span> — no refleja el origin enviado</td>
+          </tr>
+          <tr>
+            <td>TLS 1.0 / TLS 1.1</td>
+            <td>Conexión rechazada (HTTP 000)</td>
+            <td><span class="check-ok">✓ Correcto</span> — solo TLS 1.2+ aceptado</td>
+          </tr>
+          <tr>
+            <td>S3 bucket listing público</td>
+            <td>HTTP 403 en ambos buckets</td>
+            <td><span class="check-ok">✓ Correcto</span> — buckets privados</td>
+          </tr>
+          <tr>
+            <td>Endpoints admin (<code>/api/admin/cache/*</code>)</td>
+            <td>CloudFront devuelve HTML — bloqueados en producción</td>
+            <td><span class="check-ok">✓ Bloqueados</span> aunque documentados en Swagger (H4)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ S7: RECOMENDACIONES ══ -->
+  <div class="seccion" id="s7">
+    <div class="seccion-header">
+      <div class="seccion-num">7</div>
+      <h2>Recomendaciones Priorizadas</h2>
+    </div>
+    <div class="seccion-body">
+
+      <div class="rec-card">
+        <div class="rec-header urgente">⚠ Urgente — Antes del próximo proceso electoral</div>
+        <div class="rec-body">
+          <ol>
+            <li><strong>[H3] Autenticar el endpoint de padrón:</strong> implementar validación de DNI + fecha de nacimiento antes de devolver la mesa asignada. Mientras tanto, activar rate limiting severo (5 req/IP/hora). Auditar logs existentes para detectar si ocurrió enumeración masiva durante el proceso 2026.</li>
+            <li><strong>[H4] Deshabilitar Swagger en producción:</strong> agregar <code>springdoc.api-docs.enabled=false</code> y <code>springdoc.swagger-ui.enabled=false</code> en <code>application-prod.properties</code>. Agregar regla WAF en CloudFront para bloquear <code>/swagger-ui/*</code> y <code>/v3/*</code> como defensa en profundidad.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-header corto">Corto plazo — 1 a 2 semanas</div>
+        <div class="rec-body">
+          <ol>
+            <li><strong>[H4] Filtrar campos de auditoría:</strong> eliminar <code>audUsuario*</code> y <code>audFecha*</code> de todas las respuestas públicas usando DTOs o <code>@JsonIgnore</code> en Spring Boot.</li>
+            <li><strong>[H2] Rate limiting:</strong> implementar reglas en CloudFront WAF — máx. 60 req/min por IP en endpoints generales; máx. 10 req/min en endpoints de datos de padrón y actas individuales.</li>
+            <li><strong>[H5] Limitar paginación:</strong> añadir <code>@Max(100)</code> al parámetro <code>tamanio</code> en todos los endpoints paginados y devolver HTTP 400 si se supera.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-header mediano">Mediano plazo — Próximo ciclo de despliegue</div>
+        <div class="rec-body">
+          <ol>
+            <li><strong>[H7] Corregir nonce CSP:</strong> revisar el pipeline de entrega del HTML para asegurar que NGINX procese y reemplace el nonce antes de que CloudFront lo sirva. Eliminar <code>unsafe-inline</code> usando nonces por request.</li>
+            <li><strong>[H6] Actualizar HSTS:</strong> cambiar a <code>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</code> y registrar en hstspreload.org.</li>
+            <li><strong>[H1] Control de acceso real:</strong> evaluar implementación de API key pública (sin autenticación de usuario) para identificar y limitar clientes automatizados sin afectar el acceso ciudadano.</li>
+            <li><strong>[H4] Restringir Actuator:</strong> configurar <code>management.server.address=127.0.0.1</code> para que el health check solo sea accesible desde la red interna.</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ S8: LEGAL ══ -->
+  <div class="seccion" id="s8">
+    <div class="seccion-header">
+      <div class="seccion-num">8</div>
+      <h2>Contexto Legal y Ético</h2>
+    </div>
+    <div class="seccion-body">
+      <table>
+        <thead><tr><th>Norma</th><th>Aplicación</th><th>Conclusión</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Ley N° 27806</strong> — Transparencia</td><td>Art. 5: difusión activa obligatoria. Arts. 15-16: excepciones no aplicables a resultados electorales</td><td><span class="badge badge-ok">Sin restricción</span></td></tr>
+          <tr><td><strong>D.L. 1412</strong> — Gobierno Digital + D.S. 016-2017-PCM</td><td>Datos públicos reutilizables sin restricciones. ONPE publica 126 datasets en datosabiertos.gob.pe</td><td><span class="badge badge-ok">Reutilización promovida</span></td></tr>
+          <tr><td><strong>Licencia ODC-BY</strong></td><td>Aplicada por ONPE en sus datasets. Uso libre con atribución de fuente</td><td><span class="badge badge-ok">Uso libre</span></td></tr>
+          <tr><td><strong>D.L. 822, Art. 9(b)</strong> — Derechos de Autor</td><td>Documentos administrativos oficiales excluidos de copyright</td><td><span class="badge badge-ok">Sin copyright</span></td></tr>
+          <tr><td><strong>Ley N° 29733</strong> — Datos Personales</td><td>Solo aplica a datos individuales. Resultados agregados no son datos personales</td><td><span class="badge badge-ok">No aplica a resultados</span></td></tr>
+          <tr><td><strong>RM 049-2026-PCM</strong> — ENGD 2026-2030</td><td>Refuerza obligación de publicar datos en JSON/CSV/API. En vigor</td><td><span class="badge badge-ok">Marco habilitador</span></td></tr>
+        </tbody>
+      </table>
+      <div class="nota nota-ok" style="margin-top:16px;">
+        <strong>Declaración ética</strong>
+        Las vulnerabilidades documentadas en este informe se reportan con fines exclusivamente defensivos. No se realizó enumeración masiva del padrón, modificación de datos, ni ninguna acción que pudiera comprometer la integridad del proceso electoral. La única obligación legal derivada del uso de estos datos es citar la fuente: <strong>Fuente: ONPE</strong>.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ S9: ANEXO SWAGGER ══ -->
+  <div class="seccion" id="s9">
+    <div class="seccion-header">
+      <div class="seccion-num">9</div>
+      <h2>Anexo — Verificación del Swagger y Fecha de Despliegue</h2>
+    </div>
+    <div class="seccion-body">
+      <p style="font-size:13px; margin-bottom:14px;">El Swagger UI de la API es accesible directamente desde el navegador:</p>
+      <pre>https://resultadoelectoral.onpe.gob.pe/presentacion-backend/swagger-ui/index.html
+https://resultadoelectoral.onpe.gob.pe/presentacion-backend/v3/api-docs</pre>
+
+      <h4 style="margin-top:16px; color:#888; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Headers de respuesta — confirmación de fecha de despliegue</h4>
+      <pre>HTTP/1.1 200 OK
+Server:        CloudFront
+Last-Modified: Tue, 14 Apr 2026 04:38:54 GMT   ← último despliegue del backend
+X-Cache:       Miss from cloudfront
+X-Amz-Cf-Pop: LIM50-P4                          ← pop Lima, Perú
+Date:          Sun, 19 Apr 2026 16:04:14 GMT</pre>
+
+      <div class="nota nota-info" style="margin-top:16px;">
+        <strong>Interpretación:</strong> El despliegue del backend fue el <strong>martes 14 de abril de 2026 a las 04:38:54 UTC</strong> — exactamente 2 días antes del inicio del cómputo electoral (≈16 de abril de 2026). Esto sugiere que fue el despliegue de producción final preparado para el proceso.
+      </div>
+      <div class="nota nota-warn" style="margin-top:12px;">
+        <strong>Consulta a Wayback Machine:</strong> No existen snapshots de los endpoints de backend en Internet Archive. Solo hay 9 entradas para todo el dominio (principalmente raíz con HTTP 403 de 2025). No fue posible determinar el historial de cambios por esta vía.
+      </div>
+    </div>
+  </div>
+
+</div><!-- /contenido -->
+
+<footer>
+  <p>Informe de Ciberseguridad — API ONPE Elecciones Generales Perú 2026</p>
+  <p style="margin-top:6px;">Fecha de análisis: 19 de abril de 2026 &nbsp;·&nbsp; Clasificación: Investigación defensiva — uso académico e informativo</p>
+  <p style="margin-top:6px; color:#7f8c8d;">Fuente de datos: API pública ONPE bajo licencia ODC-BY &nbsp;·&nbsp; Atribución requerida al redistribuir: <strong style="color:#aab7c4;">Fuente: ONPE</strong></p>
+</footer>
+
+</body>
+</html>
